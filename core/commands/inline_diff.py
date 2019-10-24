@@ -1,5 +1,6 @@
 import os
 from collections import namedtuple
+import subprocess
 
 import sublime
 from sublime_plugin import WindowCommand, TextCommand, EventListener
@@ -610,14 +611,21 @@ class GsInlineDiffOpenFile(TextCommand):
 
     def open_file(self, row, col):
         file_name = self.view.settings().get("git_savvy.file_path")
-        self.view.window().open_file(
-            "{file}:{row}:{col}".format(
-                file=file_name,
-                row=row,
-                col=col
-            ),
-            sublime.ENCODED_POSITION
+        # self.view.window().open_file(
+        #     "{file}:{row}:{col}".format(
+        #         file=file_name,
+        #         row=row,
+        #         col=col
+        #     ),
+        #     sublime.ENCODED_POSITION
+        # )
+        file_name_with_location = "{file}:{row}:{col}".format(
+            file=file_name,
+            row=row,
+            col=col
         )
+
+        subprocess.call(('code', '--goto' , file_name_with_location))
 
     def get_editable_position(self, line_no, col_no):
         hunk_ref = self.get_closest_hunk_ref_before(line_no)

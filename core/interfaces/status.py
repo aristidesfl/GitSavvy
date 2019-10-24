@@ -1,6 +1,7 @@
 from functools import partial, wraps
 import os
 import threading
+import subprocess
 
 import sublime
 from sublime_plugin import WindowCommand, TextCommand
@@ -390,7 +391,8 @@ class GsStatusOpenFileCommand(TextCommand, GitCommand):
         file_paths = (line.strip() for line in lines if line[:4] == "    ")
         abs_paths = (os.path.join(self.repo_path, file_path) for file_path in file_paths)
         for path in abs_paths:
-            self.view.window().open_file(path)
+            subprocess.call(('code', path))
+            # self.view.window().open_file(path)
 
 
 class GsStatusDiffInlineCommand(TextCommand, GitCommand):
